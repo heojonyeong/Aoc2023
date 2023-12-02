@@ -1,31 +1,5 @@
 import Common qualified
 
-charToInt :: Char -> Integer
-charToInt x | x == '1' = 1
-            | x == '2' = 2
-            | x == '3' = 3
-            | x == '4' = 4
-            | x == '5' = 5
-            | x == '6' = 6
-            | x == '7' = 7
-            | x == '8' = 8
-            | x == '9' = 9
-            | otherwise = 0
-
-isDigit :: Char -> Bool
-isDigit x   | x == '1' = True
-            | x == '2' = True
-            | x == '3' = True
-            | x == '4' = True
-            | x == '5' = True
-            | x == '6' = True
-            | x == '7' = True
-            | x == '8' = True
-            | x == '9' = True
-            | x == '1' = True 
-            | x == '0' = True
-            | otherwise = False
-
 replaceNumberWords :: String -> String
 replaceNumberWords ('o':'n':'e':xs) = '1':replaceNumberWords ('e':xs)
 replaceNumberWords ('t':'w':'o':xs) = '2':replaceNumberWords ('o':xs)
@@ -41,11 +15,11 @@ replaceNumberWords [] = []
 
 firstDigit :: String -> Integer
 firstDigit [] = 0
-firstDigit [x] = if isDigit x
-                 then charToInt x
+firstDigit [x] = if Common.isDigit x
+                 then Common.charToInt x
                  else 0
-firstDigit (x:xs) = if isDigit x
-                    then charToInt x
+firstDigit (x:xs) = if Common.isDigit x
+                    then Common.charToInt x
                     else firstDigit xs
 
 lastDigit :: String -> Integer

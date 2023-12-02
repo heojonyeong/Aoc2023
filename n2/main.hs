@@ -15,34 +15,14 @@ data Color = Red Integer
 
     deriving (Show)
 
-dropPrefix :: String -> String -> String
-dropPrefix [] x  = x
-dropPrefix x [] = []
-dropPrefix (x:xs) (y:ys) = if x == y
-                           then dropPrefix xs ys
-                           else y:ys
-
-splitAt :: Char -> String -> (String, String)
-splitAt c [] = ([], [])
-splitAt c (x:xs) = if c == x
-                   then ([], xs)
-                   else (x: fst rest, snd rest)
-
-                   where rest = Main.splitAt c xs
-
-splitAtRepeating :: Char -> String -> [String]
-splitAtRepeating c [] = []
-splitAtRepeating c x = first : splitAtRepeating c rest
-    where (first, rest) = Main.splitAt c x
-
 parseGame :: String -> (Integer, [[String]])
 parseGame x = (id, cleaned)
-    where id = read (dropPrefix "Game " gamePart) :: Integer
-          cleaned = map (map (dropPrefix " ")) splitRounds
+    where id = read (Common.dropPrefix "Game " gamePart) :: Integer
+          cleaned = map (map (Common.dropPrefix " ")) splitRounds
 
-          splitRounds = map (splitAtRepeating ',') rounds
-          rounds = splitAtRepeating ';' roundsPart
-          (gamePart, roundsPart) = Main.splitAt ':' x
+          splitRounds = map (Common.splitAtRepeating ',') rounds
+          rounds = Common.splitAtRepeating ';' roundsPart
+          (gamePart, roundsPart) = Common.splitAt ':' x
 
 addColor :: Color -> RGB -> RGB
 addColor (Red x) (RGB (Red r) (Green g) (Blue b)) = RGB (Red (x + r)) (Green g) (Blue b)
@@ -55,19 +35,12 @@ toRGB = foldr addColor (RGB (Red 0) (Green 0) (Blue 0))
 maxRGB :: [RGB] -> RGB
 maxRGB = foldr Main.maximum (RGB (Red 0) (Green 0) (Blue 0))
 
-endsWith :: String -> String -> Bool
-endsWith x [] = True
-endsWith [] x = False
-endsWith (x:xs) (y:ys) = if x == y
-                         then endsWith xs ys
-                         else endsWith xs (y:ys)
-
 makeColor :: String -> Color
-makeColor x | endsWith x "green" = Green number
-            | endsWith x "red" = Red number
-            | endsWith x "blue" = Blue number
+makeColor x | Common.endsWith x "green" = Green number
+            | Common.endsWith x "red" = Red number
+            | Common.endsWith x "blue" = Blue number
             
-            where number = (read :: String -> Integer) (fst (Main.splitAt ' ' x))
+            where number = (read :: String -> Integer) (fst (Common.splitAt ' ' x))
 
 makeRGB :: [String] -> RGB
 makeRGB = foldr (addColor . makeColor) (RGB (Red 0) (Green 0) (Blue 0)) 
