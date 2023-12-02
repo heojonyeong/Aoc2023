@@ -93,9 +93,19 @@ solveBound = solveGame 12 13 14
 solve :: [String] -> Integer
 solve = foldr ((+) . solveBound) 0
 
+power :: (Integer, RGB) -> Integer
+power (_, RGB (Red r) (Green g) (Blue b)) = r*g*b
+
+solveBound2 :: String -> Integer
+solveBound2 = power . solveGameHelper
+
+solve2 :: [String] -> Integer
+solve2 = foldr ((+) . solveBound2) 0
+
 main = do --print(endsWith "5 blue" "blue")
     --      print(makeColor "123 blue")
    --       print(makeRGB ["123 blue", "22 blue", "5 green", "7 red", "3 green"])
  --         print(parseGame "Game 1: 3 red; 5 red, 2 blue; 3 blue, 2 red, 15 green")
           splitLines <- Common.readAndSplit "input.txt"
           print(solve splitLines)
+          print(solve2 splitLines)
