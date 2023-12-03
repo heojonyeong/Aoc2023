@@ -1,8 +1,20 @@
 module Common where
+import Data.Array
 
 readAndSplit :: String -> IO [String]
 readAndSplit x = do file <- readFile x
                     return (lines file)
+
+toArray :: [a] -> Array Int a
+toArray [] = array (1,0) []
+toArray x = listArray (0, length x - 1) x
+
+to2DArray :: [[a]] -> Array (Int, Int) a
+to2DArray [] = array ((1,0), (1,0)) []
+to2DArray x = listArray ((0,0), (height-1, width-1)) flattened
+    where width = length $ head x
+          height = length x
+          flattened = concat x
 
 charToInt :: Char -> Integer
 charToInt x | x == '1' = 1
@@ -29,7 +41,10 @@ isDigit x   | x == '1' = True
             | x == '1' = True 
             | x == '0' = True
             | otherwise = False
-            
+
+isSymbol :: Char -> Bool
+isSymbol x = x `elem` "!@#$%^&*()-_=+/?"          
+
 dropPrefix :: Eq a => [a] -> [a] -> [a]
 dropPrefix [] x  = x
 dropPrefix x [] = []
