@@ -60,10 +60,25 @@ splitAt c (x:xs) = if c == x
 
                    where rest = Common.splitAt c xs
 
+-- Split at every occurence of c
 splitAtRepeating :: Eq a => a -> [a] -> [[a]]
 splitAtRepeating c [] = []
 splitAtRepeating c x = first : splitAtRepeating c rest
     where (first, rest) = Common.splitAt c x
+
+stripFirst :: Eq a => a -> [a] -> [a]
+stripFirst x [] = []
+stripFirst c (x:xs) = if c == x
+                      then stripFirst c xs
+                      else x:xs
+
+-- Split at everz occurence of c but treat repeating occurences as single
+splitAtMultiple :: Eq a => a -> [a] -> [[a]]
+splitAtMultiple c [] = []
+splitAtMultiple c x = first : splitAtMultiple c stripped 
+
+    where (first, rest) = Common.splitAt c x
+          stripped = stripFirst c rest
 
 endsWith :: Eq a => [a] -> [a] -> Bool
 endsWith x [] = True
