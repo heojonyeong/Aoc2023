@@ -75,9 +75,11 @@ stripFirst c (x:xs) = if c == x
 -- Split at everz occurence of c but treat repeating occurences as single
 splitAtMultiple :: Eq a => a -> [a] -> [[a]]
 splitAtMultiple c [] = []
-splitAtMultiple c x = first : splitAtMultiple c stripped 
+splitAtMultiple c (x:xs) = if x == c
+                           then splitAtMultiple c (stripFirst c (x:xs)) 
+                           else first : splitAtMultiple c stripped
 
-    where (first, rest) = Common.splitAt c x
+    where (first, rest) = Common.splitAt c (x:xs)
           stripped = stripFirst c rest
 
 endsWith :: Eq a => [a] -> [a] -> Bool
@@ -87,3 +89,8 @@ endsWith (x:xs) (y:ys) = if x == y
                          then endsWith xs ys
                          else endsWith xs (y:ys)
 
+dropAll :: Eq a => a -> [a] -> [a]
+dropAll c [] = []
+dropAll c (x:xs) = if x==c
+                   then dropAll c xs
+                   else x : (dropAll c xs)
