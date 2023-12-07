@@ -94,3 +94,9 @@ dropAll c [] = []
 dropAll c (x:xs) = if x==c
                    then dropAll c xs
                    else x : (dropAll c xs)
+
+count :: Eq a => a -> [a] -> Integer
+count x [] = 0
+count x (y:ys) = if x==y
+                 then 1+count x ys
+                 else count x ys

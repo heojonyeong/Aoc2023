@@ -1,7 +1,7 @@
 import qualified Common
 import Data.List
 
-data Card = Two | Three | Four | Five | Six | Seven | Eight | Nine | T | J | Q | K | A
+data Card = J | Two | Three | Four | Five | Six | Seven | Eight | Nine | T | Q | K | A
     deriving(Show, Eq, Ord)
 
 readCard :: Char -> Card
@@ -112,15 +112,49 @@ parseHands = map parseHand_
                  bet :: Integer = read betS
                  hand = fst $ parseHand (Empty, cards)
 
-solve1 :: [String] -> Integer
-solve1 x = value
-    where hands = sort $ parseHands x
+upgradeHand :: Hand -> Hand
+upgradeHand x = case x of
+                 Single5 a b c d e f -> if numJ == 1
+                                        then Pair1Single3 a b c d e
+                                        else Single5 a b c d e f
+                 Pair1Single3 a b c d e -> if numJ == 1 || numJ == 2
+                                           then Triple1Single2 a b c d
+                                           else Pair1Single3 a b c d e
+                 Pair2Single1 a b c d-> if numJ==1
+                                        then Triple1Pair1 a b c
+                                        else if numJ==2
+                                             then Quadruple1Single1 a b c
+                                             else Pair2Single1 a b c d
+                 Triple1Single2 a b c d -> if numJ==1 || numJ==3
+                                           then Quadruple1Single1 a b c
+                                           else Triple1Single2 a b c d
+                 Triple1Pair1 a b c -> if numJ==2 || numJ==3
+                                       then Quintuple a b
+                                       else Triple1Pair1 a b c
+                 Quadruple1Single1 a b c -> if numJ==1 || numJ==4
+                                            then Quintuple a b
+                                            else Quadruple1Single1 a b c
+                 Quintuple a b -> Quintuple a b
+    where orig = case x of 
+                  Single5 a _ _ _ _ _ -> a
+                  Pair1Single3 a _ _ _ _-> a
+                  Pair2Single1 a _ _ _-> a
+                  Triple1Single2 a _ _ _ -> a
+                  Triple1Pair1 a _ _ -> a
+                  Quadruple1Single1 a _ _ -> a
+                  Quintuple a _ -> a
+          numJ = Common.count J orig
+
+solve2 :: [String] -> Integer
+solve2 x = value
+    where hands = sort $ map (\(h,b) -> (upgradeHand h, b)) (parseHands x)
           accum :: [(Hand, Integer)] -> Integer -> Integer -> Integer
           accum [] _ total = total
           accum ((a,b):ys) i total = accum ys (i+1) (total+b*i) 
 
           value = accum hands 1 0
+          
 
 main = do file <- getLine
           input <- Common.readAndSplit file
-          print $ solve1 input
+          print $ solve2 input
