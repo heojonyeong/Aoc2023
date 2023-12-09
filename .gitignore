@@ -4,3 +4,9 @@
 *input.txt
 *input_sample.txt
 *input*
+*.eventlog
+*.html
+*.prof
+*.aux
+*.hp
+*.ps
