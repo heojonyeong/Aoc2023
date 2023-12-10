@@ -100,3 +100,13 @@ count x [] = 0
 count x (y:ys) = if x==y
                  then 1+count x ys
                  else count x ys
+
+(!?) :: (Ix i) => Array i e -> i -> Maybe e
+a !? idx = if inRange (bounds a) idx
+           then Just (a!idx)
+           else Nothing
+
+arrToString :: Array (Int,Int) Char -> String
+arrToString a = concat [line y | y <- [ly..hy]]
+    where ((ly,lx),(hy,hx)) = bounds a
+          line y = [a ! (y,x) | x <- [lx..hx]] ++ "\n"
