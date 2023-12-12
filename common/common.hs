@@ -95,11 +95,8 @@ dropAll c (x:xs) = if x==c
                    then dropAll c xs
                    else x : (dropAll c xs)
 
-count :: Eq a => a -> [a] -> Integer
-count x [] = 0
-count x (y:ys) = if x==y
-                 then 1+count x ys
-                 else count x ys
+count :: (Eq a, Foldable t, Integral i) => a -> t a -> i
+count c = foldr (\x sum -> if x==c then sum+1 else sum) 0
 
 (!?) :: (Ix i) => Array i e -> i -> Maybe e
 a !? idx = if inRange (bounds a) idx
